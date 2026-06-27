@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-slate-900 text-slate-900 antialiased font-sans;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 20px);
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes spin-3d {
+  0% {
+    transform: rotateX(-15deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(-15deg) rotateY(360deg);
+  }
+}
+
+@keyframes spin-idle-3d {
+  0% {
+    transform: rotateX(-15deg) rotateY(45deg);
+  }
+  100% {
+    transform: rotateX(-15deg) rotateY(405deg);
+  }
+}
+
+@keyframes heartbeat-scale {
+  0% {
+    transform: scale(0.95);
+  }
+  15% {
+    transform: scale(1.02);
+  }
+  30% {
+    transform: scale(0.95);
+  }
+  45% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(0.95);
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat-scale 3s ease-in-out infinite;
+}
+
+.sphere-spin-3d {
+  animation: spin-3d 8s linear infinite;
+  transform-style: preserve-3d;
+}
+
+.sphere-idle {
+  transform: rotateX(-15deg) rotateY(45deg);
+  transform-style: preserve-3d;
+}
+
+.sphere-idle-spin {
+  animation: spin-idle-3d 24s linear infinite;
+  transform-style: preserve-3d;
+}
+
+.transform-3d {
+  transform-style: preserve-3d;
+}

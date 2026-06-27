@@ -1,0 +1,8 @@
+{
+  "name": "AuthentiChain",
+  "description": "A high-fidelity prototype for AuthentiChain showcasing a dashboard, mobile simulator, ROI calculator, and technology blueprint.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
