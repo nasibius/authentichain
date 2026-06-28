@@ -35,7 +35,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-white sm:bg-slate-900 flex flex-col items-center justify-center sm:p-8 font-sans selection:bg-sky-200 selection:text-sky-900">
+    <div className="min-h-[100dvh] bg-white sm:bg-slate-900 flex flex-col items-center justify-center sm:p-8 font-sans selection:bg-emerald-200 selection:text-emerald-900">
       <div className="w-full sm:w-[393px] h-[100dvh] sm:h-[852px] bg-white sm:rounded-[3rem] overflow-hidden relative shadow-2xl sm:ring-8 sm:ring-slate-800 flex flex-col">
         {/* Dynamic Island fake for desktop preview */}
         <div className="hidden sm:flex absolute top-0 w-full justify-center z-50 pt-3 pointer-events-none">
@@ -45,25 +45,22 @@ export default function App() {
         {/* Global Header */}
         <div
           onClick={handleHeaderTap}
-          className="pt-safe sm:pt-4 pb-2 px-1 flex items-center gap-2 cursor-pointer select-none bg-white/80 backdrop-blur-md border-b border-sky-100 z-40 relative shrink-0"
+          className="pt-safe sm:pt-6 pb-3 px-3 flex items-center gap-3 cursor-pointer select-none bg-white/80 backdrop-blur-md border-b border-emerald-100 z-40 relative shrink-0"
         >
           <img
             src="/logo.png"
             alt="AuthentiChain Logo"
-            className="h-7 object-contain"
-            style={{
-              filter: "hue-rotate(90deg)",
-            }}
+            className="h-8 object-contain mt-[10px]"
           />
           {isCompanyMode && (
-            <span className="ml-auto text-[10px] uppercase tracking-wider font-bold text-sky-600 bg-sky-100 px-2 py-1 rounded-full">
+            <span className="ml-auto text-[10px] uppercase tracking-wider font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
               Admin
             </span>
           )}
         </div>
 
         {/* App Content */}
-        <div className="flex-1 overflow-hidden relative bg-[#F0F9FF] flex flex-col">
+        <div className="flex-1 overflow-hidden relative bg-[#F0FDF4] flex flex-col">
           {isCompanyMode ? <CompanyApp /> : <ConsumerApp />}
         </div>
 

@@ -6,6 +6,13 @@ import {
   CheckCircle,
   ShieldAlert,
   ChevronRight,
+  AlertTriangle,
+  Search,
+  User,
+  Bell,
+  Shield,
+  HelpCircle,
+  LogOut,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 
@@ -17,15 +24,11 @@ export function ConsumerApp() {
       <div className="flex-1 overflow-y-auto w-full relative">
         {activeTab === "scan" && <ScanView />}
         {activeTab === "history" && <HistoryView />}
-        {activeTab === "settings" && (
-          <div className="p-6 text-slate-500 text-center mt-10">
-            Settings placeholder
-          </div>
-        )}
+        {activeTab === "settings" && <SettingsView />}
       </div>
 
       {/* Bottom Nav */}
-      <div className="bg-white/90 backdrop-blur-xl border-t border-sky-100 pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
+      <div className="bg-white/90 backdrop-blur-xl border-t border-emerald-100 pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
         <NavButton
           id="scan"
           icon={ScanLine}
@@ -61,20 +64,20 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
       <div
         className={cn(
           "p-1.5 rounded-xl transition-all duration-300",
-          active ? "bg-sky-100" : "bg-transparent",
+          active ? "bg-emerald-100" : "bg-transparent",
         )}
       >
         <Icon
           className={cn(
             "w-6 h-6 transition-colors duration-200",
-            active ? "text-sky-600" : "text-slate-400",
+            active ? "text-emerald-600" : "text-slate-400",
           )}
         />
       </div>
       <span
         className={cn(
           "text-[10px] font-bold transition-colors duration-200 tracking-wide",
-          active ? "text-sky-600" : "text-slate-400",
+          active ? "text-emerald-600" : "text-slate-400",
         )}
       >
         {label}
@@ -112,19 +115,26 @@ const PRODUCTS = [
 
 function ScanView() {
   const [scanState, setScanState] = useState<
-    "idle" | "scanning" | "success" | "fake"
+    "idle" | "scanning" | "success" | "fake" | "suspicious"
   >("idle");
   const [scannedProduct, setScannedProduct] = useState(PRODUCTS[0]);
+  const [scanTimes, setScanTimes] = useState(0);
 
   const handleScan = () => {
     setScanState("scanning");
     setTimeout(() => {
-      const isSuccess = Math.random() > 0.3;
-      if (isSuccess) {
+      const rand = Math.random();
+      if (rand > 0.6) {
         setScannedProduct(
           PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)],
         );
         setScanState("success");
+      } else if (rand > 0.3) {
+        setScannedProduct(
+          PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)],
+        );
+        setScanTimes(Math.floor(Math.random() * 5) + 1); // 1 to 5 times
+        setScanState("suspicious");
       } else {
         setScanState("fake");
       }
@@ -242,17 +252,51 @@ function ScanView() {
     );
   }
 
+  if (scanState === "suspicious") {
+    return (
+      <div className="absolute inset-0 overflow-y-auto bg-gradient-to-b from-white to-[#fffbeb] animate-in fade-in zoom-in-95 duration-300">
+        <div className="min-h-full flex flex-col items-center justify-center p-6 py-12">
+          <div className="w-20 h-20 bg-[#fef3c7] text-[#d97706] rounded-[1.5rem] flex items-center justify-center mb-6 shadow-sm border border-yellow-100 mt-4 shrink-0">
+            <AlertTriangle className="w-10 h-10" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2 tracking-tight text-center">
+            Suspicious Activity
+          </h2>
+          <p className="text-[#d97706] text-center mb-8 text-sm font-medium">
+            This tag is suspicious. It was scanned {scanTimes}{" "}
+            {scanTimes === 1 ? "time" : "times"} already.
+          </p>
+
+          <div className="w-full max-w-sm space-y-3 mt-4 shrink-0 mb-4">
+            <button
+              onClick={() => setScanState("idle")}
+              className="w-full bg-[#d97706] text-white font-bold text-lg py-4 rounded-2xl shadow-lg active:scale-95 transition-transform"
+            >
+              Report Issue
+            </button>
+            <button
+              onClick={() => setScanState("idle")}
+              className="w-full bg-white text-slate-600 font-bold text-lg py-4 rounded-2xl shadow-sm border border-slate-200 active:scale-95 transition-transform"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
       <div className="relative mb-16 mt-[-40px] perspective-[1000px]">
         {scanState === "scanning" && (
           <>
             <div
-              className="absolute inset-0 bg-sky-400 rounded-full animate-ping opacity-30 scale-150"
+              className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-30 scale-150"
               style={{ animationDuration: "2s" }}
             ></div>
             <div
-              className="absolute inset-0 bg-sky-400 rounded-full animate-ping opacity-30 scale-125"
+              className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-30 scale-125"
               style={{ animationDuration: "2s", animationDelay: "0.5s" }}
             ></div>
           </>
@@ -283,7 +327,7 @@ function ScanView() {
               {[...Array(12)].map((_, i) => (
                 <div
                   key={`long-${i}`}
-                  className="absolute rounded-full left-1/2 top-1/2 w-full h-full border-[1.5px] border-[#0ea5e9] opacity-70"
+                  className="absolute rounded-full left-1/2 top-1/2 w-full h-full border-[1.5px] border-[#10b981] opacity-70"
                   style={{
                     transform: `translate(-50%, -50%) rotateY(${i * 15}deg)`,
                   }}
@@ -299,7 +343,7 @@ function ScanView() {
                 return (
                   <div
                     key={`lat-${i}`}
-                    className="absolute rounded-full left-1/2 top-1/2 border-[1.5px] border-[#0ea5e9] opacity-70"
+                    className="absolute rounded-full left-1/2 top-1/2 border-[1.5px] border-[#10b981] opacity-70"
                     style={{
                       width: `${r * 2}px`,
                       height: `${r * 2}px`,
@@ -315,7 +359,7 @@ function ScanView() {
           <div className="flex flex-col items-center z-10 text-slate-800">
             <ScanLine
               className={cn(
-                "w-12 h-12 mb-2 text-[#0ea5e9]",
+                "w-12 h-12 mb-2 text-[#10b981]",
                 scanState === "scanning" && "animate-pulse opacity-80",
               )}
             />
@@ -336,6 +380,11 @@ function ScanView() {
 }
 
 function HistoryView() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const categories = ["All", "Verified", "Suspicious", "Fake"];
+
   const history = [
     {
       id: 1,
@@ -361,49 +410,200 @@ function HistoryView() {
       time: "Oct 10, 16:30",
       status: "success",
     },
+    {
+      id: 5,
+      name: "Vintage Bordeaux Wine",
+      time: "Oct 08, 11:20",
+      status: "suspicious",
+    },
+    {
+      id: 6,
+      name: "Designer Sunglasses",
+      time: "Oct 05, 15:45",
+      status: "fake",
+    },
+    {
+      id: 7,
+      name: "Organic Honey",
+      time: "Oct 01, 08:30",
+      status: "success",
+    },
   ];
 
+  const filteredHistory = history.filter((item) => {
+    const matchesSearch = item.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      activeCategory === "All" ||
+      (activeCategory === "Verified" && item.status === "success") ||
+      (activeCategory === "Suspicious" && item.status === "suspicious") ||
+      (activeCategory === "Fake" && item.status === "fake");
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="p-6 pb-24">
-      <h2 className="text-2xl font-bold text-slate-800 mb-6">Recent Scans</h2>
-      <div className="space-y-4">
-        {history.map((item) => (
+    <div className="p-6 pb-0 h-full flex flex-col">
+      <h2 className="text-2xl font-bold text-slate-800 mb-4">Recent Scans</h2>
+
+      {/* Search Bar */}
+      <div className="relative mb-4 shrink-0">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <input
+          type="text"
+          placeholder="Search history..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm"
+        />
+      </div>
+
+      {/* Categories */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar shrink-0">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={cn(
+              "px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-colors",
+              activeCategory === cat
+                ? "bg-slate-800 text-white"
+                : "bg-white text-slate-500 border border-slate-200",
+            )}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* List */}
+      <div className="space-y-3 overflow-y-auto flex-1 pr-1 pb-0">
+        {filteredHistory.map((item) => (
           <div
             key={item.id}
-            className="bg-white p-4 rounded-[1.25rem] shadow-sm border border-slate-100 flex items-center gap-4 active:bg-slate-50 transition-colors"
+            className="bg-white p-4 rounded-[1.25rem] shadow-sm border border-slate-100 flex items-center gap-4 active:bg-slate-50 transition-colors shrink-0"
           >
             <div
               className={cn(
                 "w-12 h-12 rounded-[1rem] flex items-center justify-center shrink-0",
                 item.status === "success"
                   ? "bg-[#f0fdf4] text-[#16a34a]"
-                  : "bg-[#ffe4e6] text-[#e11d48]",
+                  : item.status === "suspicious"
+                    ? "bg-[#fffbeb] text-[#d97706]"
+                    : "bg-[#ffe4e6] text-[#e11d48]",
               )}
             >
               {item.status === "success" ? (
                 <CheckCircle className="w-6 h-6" />
+              ) : item.status === "suspicious" ? (
+                <AlertTriangle className="w-6 h-6" />
               ) : (
                 <ShieldAlert className="w-6 h-6" />
               )}
             </div>
-            <div className="flex-1">
-              <div className="font-bold text-slate-800 text-base mb-0.5">
+            <div className="flex-1 min-w-0">
+              <div className="font-bold text-slate-800 text-base mb-0.5 truncate">
                 {item.name}
               </div>
               <div
                 className={cn(
-                  "text-xs font-medium",
+                  "text-xs font-medium truncate",
                   item.status === "success"
                     ? "text-slate-400"
-                    : "text-[#e11d48]",
+                    : item.status === "suspicious"
+                      ? "text-[#d97706]"
+                      : "text-[#e11d48]",
                 )}
               >
-                {item.status === "success" ? item.time : "Counterfeit Warning"}
+                {item.status === "success"
+                  ? item.time
+                  : item.status === "suspicious"
+                    ? "Suspicious Activity"
+                    : "Counterfeit Warning"}
               </div>
             </div>
-            <ChevronRight className="w-5 h-5 text-slate-300" />
+            <ChevronRight className="w-5 h-5 text-slate-300 shrink-0" />
           </div>
         ))}
+        {filteredHistory.length === 0 && (
+          <div className="text-center py-10 text-slate-400 text-sm">
+            No scans found.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SettingsView() {
+  return (
+    <div className="p-6 pb-6 h-full overflow-y-auto">
+      <h2 className="text-2xl font-bold text-slate-800 mb-6">Settings</h2>
+
+      <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-6 flex items-center gap-4">
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+          <User className="w-8 h-8 text-emerald-600" />
+        </div>
+        <div>
+          <div className="font-bold text-slate-800 text-lg">Huseyn Aliyev</div>
+          <div className="text-slate-500 text-sm">huseyn.aliyev@gmail.com</div>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
+            Preferences
+          </div>
+          <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
+            <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors border-b border-slate-50">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-emerald-600" />
+                </div>
+                <span className="font-medium text-slate-700 text-sm">
+                  Push Notifications
+                </span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-300" />
+            </button>
+            <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-emerald-600" />
+                </div>
+                <span className="font-medium text-slate-700 text-sm">
+                  Privacy & Security
+                </span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-300" />
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
+            Support
+          </div>
+          <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
+            <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4 text-emerald-600" />
+                </div>
+                <span className="font-medium text-slate-700 text-sm">
+                  Help Center
+                </span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-300" />
+            </button>
+          </div>
+        </div>
+
+        <button className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 p-4 flex items-center justify-center gap-2 active:bg-slate-50 transition-colors text-red-500 font-bold text-sm">
+          <LogOut className="w-4 h-4" />
+          Sign Out
+        </button>
       </div>
     </div>
   );
