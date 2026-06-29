@@ -16,35 +16,12 @@ export function CompanyApp() {
   const [dppModalOpen, setDppModalOpen] = useState(false);
 
   return (
-    <div className="h-full flex flex-col w-full">
-      <div className="flex-1 overflow-y-auto w-full bg-[#F0F9FF]">
-        {activeTab === "dashboard" && (
-          <AdminDashboard onOpenDpp={() => setDppModalOpen(true)} />
-        )}
-        {activeTab === "threats" && (
-          <div className="p-6 text-slate-500 text-center mt-10">
-            Threat Intelligence Feed
-          </div>
-        )}
-        {activeTab === "settings" && (
-          <div className="p-6 text-slate-500 text-center mt-10">
-            Settings placeholder
-          </div>
-        )}
-      </div>
-
-      {/* Floating Action Button for DPP */}
-      {activeTab === "dashboard" && (
-        <button
-          onClick={() => setDppModalOpen(true)}
-          className="absolute bottom-24 right-6 bg-slate-900 text-white rounded-full p-4 shadow-xl active:scale-95 transition-transform flex items-center justify-center z-30"
-        >
-          <FileText className="w-6 h-6" />
-        </button>
-      )}
-
-      {/* Bottom Nav */}
-      <div className="bg-white/90 backdrop-blur-xl border-t border-slate-200 pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
+    <div className="h-full flex flex-row w-full">
+      {/* Side Nav */}
+      <div className="w-64 bg-white/90 backdrop-blur-xl border-r border-slate-200 p-6 flex flex-col gap-2 relative z-40">
+        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">
+          Menu
+        </div>
         <NavButton
           id="dashboard"
           icon={LayoutDashboard}
@@ -66,24 +43,50 @@ export function CompanyApp() {
           active={activeTab === "settings"}
           onClick={() => setActiveTab("settings")}
         />
+
+        {/* Floating Action Button for DPP - moved to sidebar */}
+        <div className="mt-auto">
+          <button
+            onClick={() => setDppModalOpen(true)}
+            className="w-full bg-slate-900 text-white rounded-xl p-4 shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-3 z-30"
+          >
+            <FileText className="w-5 h-5" />
+            <span className="font-bold text-sm">EU Product Passport</span>
+          </button>
+        </div>
       </div>
 
-      {/* DPP Modal (Bottom Sheet) */}
+      <div className="flex-1 overflow-y-auto w-full bg-[#F0F9FF] relative">
+        {activeTab === "dashboard" && (
+          <AdminDashboard onOpenDpp={() => setDppModalOpen(true)} />
+        )}
+        {activeTab === "threats" && (
+          <div className="p-6 text-slate-500 text-center mt-10">
+            Threat Intelligence Feed
+          </div>
+        )}
+        {activeTab === "settings" && (
+          <div className="p-6 text-slate-500 text-center mt-10">
+            Settings placeholder
+          </div>
+        )}
+      </div>
+
+      {/* DPP Modal (Bottom Sheet / Modal) */}
       {dppModalOpen && (
-        <div className="absolute inset-0 z-50 flex flex-col justify-end bg-slate-900/40 backdrop-blur-sm animate-in fade-in">
+        <div className="absolute inset-0 z-50 flex flex-col justify-center items-center bg-slate-900/40 backdrop-blur-sm animate-in fade-in p-4 sm:p-8">
           <div
             className="absolute inset-0"
             onClick={() => setDppModalOpen(false)}
           ></div>
-          <div className="bg-white rounded-t-[2rem] max-h-[85%] flex flex-col shadow-2xl relative animate-in slide-in-from-bottom-full duration-300">
-            <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-3 mb-2 shrink-0"></div>
-            <div className="px-6 py-2 pb-4 border-b border-slate-100 flex justify-between items-center shrink-0">
+          <div className="bg-white rounded-[2rem] w-full max-w-lg max-h-[85%] flex flex-col shadow-2xl relative animate-in zoom-in-95 duration-300">
+            <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center shrink-0">
               <h3 className="font-bold text-xl text-slate-800">
                 EU Product Passport
               </h3>
               <button
                 onClick={() => setDppModalOpen(false)}
-                className="p-2 bg-slate-100 rounded-full active:bg-slate-200"
+                className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors"
               >
                 <X className="w-5 h-5 text-slate-600" />
               </button>
@@ -109,8 +112,8 @@ export function CompanyApp() {
                 </pre>
               </div>
             </div>
-            <div className="p-6 bg-white border-t border-slate-100 pb-safe sm:pb-8 shrink-0">
-              <button className="w-full bg-[#0EA5E9] text-white font-bold text-lg py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition-transform">
+            <div className="p-6 bg-white border-t border-slate-100 rounded-b-[2rem] shrink-0">
+              <button className="w-full bg-[#0EA5E9] text-white font-bold text-lg py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition-transform hover:bg-[#0284c7]">
                 <Download className="w-5 h-5" />
                 Export Data
               </button>
@@ -126,24 +129,20 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
   return (
     <button
       onClick={onClick}
-      className="flex flex-col items-center gap-1.5 p-2 min-w-[72px]"
+      className={cn(
+        "flex items-center gap-3 p-3 rounded-xl transition-all duration-300 w-full text-left",
+        active ? "bg-slate-100" : "bg-transparent hover:bg-slate-50",
+      )}
     >
-      <div
+      <Icon
         className={cn(
-          "p-1.5 rounded-xl transition-all duration-300",
-          active ? "bg-slate-100" : "bg-transparent",
+          "w-5 h-5 transition-colors duration-200 shrink-0",
+          active ? "text-slate-800" : "text-slate-400",
         )}
-      >
-        <Icon
-          className={cn(
-            "w-6 h-6 transition-colors duration-200",
-            active ? "text-slate-800" : "text-slate-400",
-          )}
-        />
-      </div>
+      />
       <span
         className={cn(
-          "text-[10px] font-bold transition-colors duration-200 tracking-wide",
+          "text-sm font-bold transition-colors duration-200 tracking-wide truncate",
           active ? "text-slate-800" : "text-slate-400",
         )}
       >
@@ -198,7 +197,7 @@ function AdminDashboard({ onOpenDpp }: { onOpenDpp: () => void }) {
   ];
 
   return (
-    <div className="p-6 pb-24">
+    <div className="p-6 pb-10">
       <div className="flex justify-between items-end mb-6">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
@@ -210,31 +209,35 @@ function AdminDashboard({ onOpenDpp }: { onOpenDpp: () => void }) {
         </div>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory hide-scrollbar -mx-6 px-6">
-        <div className="snap-center shrink-0 w-[85%] bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6">
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden h-full">
           <div className="absolute right-0 top-0 w-32 h-32 bg-sky-50 rounded-full blur-2xl translate-x-10 -translate-y-10" />
-          <div className="relative z-10">
+          <div className="relative z-10 flex flex-col h-full justify-between">
             <div className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">
               Total Scans
             </div>
-            <div className="text-4xl font-black text-slate-800 tracking-tight">
-              145,200
-            </div>
-            <div className="mt-4 text-xs font-bold text-sky-600 bg-sky-50 inline-block px-3 py-1.5 rounded-full">
-              +12.3% vs yesterday
+            <div>
+              <div className="text-4xl font-black text-slate-800 tracking-tight">
+                145,200
+              </div>
+              <div className="mt-4 text-xs font-bold text-sky-600 bg-sky-50 inline-block px-3 py-1.5 rounded-full">
+                +12.3% vs yesterday
+              </div>
             </div>
           </div>
         </div>
-        <div className="snap-center shrink-0 w-[85%] bg-[#e11d48] text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden">
+        <div className="bg-[#e11d48] text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden h-full">
           <div className="absolute right-0 top-0 w-32 h-32 bg-rose-400/30 rounded-full blur-2xl translate-x-10 -translate-y-10" />
-          <div className="relative z-10">
+          <div className="relative z-10 flex flex-col h-full justify-between">
             <div className="text-sm font-bold text-rose-200 uppercase tracking-wider mb-2">
               Threats Blocked
             </div>
-            <div className="text-4xl font-black tracking-tight">3,402</div>
-            <div className="mt-4 text-xs font-bold text-rose-100 bg-rose-900/30 inline-block px-3 py-1.5 rounded-full flex items-center gap-1.5 w-max">
-              <AlertCircle className="w-3.5 h-3.5" />
-              Requires attention
+            <div>
+              <div className="text-4xl font-black tracking-tight">3,402</div>
+              <div className="mt-4 text-xs font-bold text-rose-100 bg-rose-900/30 inline-block px-3 py-1.5 rounded-full flex items-center gap-1.5 w-max">
+                <AlertCircle className="w-3.5 h-3.5" />
+                Requires attention
+              </div>
             </div>
           </div>
         </div>

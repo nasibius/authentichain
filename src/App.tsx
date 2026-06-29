@@ -35,12 +35,21 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-white sm:bg-slate-900 flex flex-col items-center justify-center sm:p-8 font-sans selection:bg-emerald-200 selection:text-emerald-900">
-      <div className="w-full sm:w-[393px] h-[100dvh] sm:h-[852px] bg-white sm:rounded-[3rem] overflow-hidden relative shadow-2xl sm:ring-8 sm:ring-slate-800 flex flex-col">
+    <div className="min-h-[100dvh] bg-white sm:bg-slate-900 flex flex-col items-center justify-center sm:p-8 font-sans selection:bg-emerald-200 selection:text-emerald-900 transition-all duration-500">
+      <div
+        className={cn(
+          "bg-white overflow-hidden relative shadow-2xl flex flex-col transition-all duration-500",
+          isCompanyMode
+            ? "w-full h-[100dvh] sm:rounded-2xl sm:w-[1200px] sm:h-[800px] sm:ring-1 sm:ring-slate-800"
+            : "w-full sm:w-[393px] h-[100dvh] sm:h-[852px] sm:rounded-[3rem] sm:ring-8 sm:ring-slate-800",
+        )}
+      >
         {/* Dynamic Island fake for desktop preview */}
-        <div className="hidden sm:flex absolute top-0 w-full justify-center z-50 pt-3 pointer-events-none">
-          <div className="w-32 h-8 bg-black rounded-full"></div>
-        </div>
+        {!isCompanyMode && (
+          <div className="hidden sm:flex absolute top-0 w-full justify-center z-50 pt-3 pointer-events-none">
+            <div className="w-32 h-8 bg-black rounded-full"></div>
+          </div>
+        )}
 
         {/* Global Header */}
         <div
