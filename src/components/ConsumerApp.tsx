@@ -28,7 +28,7 @@ export function ConsumerApp() {
       </div>
 
       {/* Bottom Nav */}
-      <div className="bg-white/90 backdrop-blur-xl border-t border-lime-100 pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
+      <div className="bg-white/60 backdrop-blur-2xl border-t border-white/60 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
         <NavButton
           id="scan"
           icon={ScanLine}
@@ -64,20 +64,20 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
       <div
         className={cn(
           "p-1.5 rounded-xl transition-all duration-300",
-          active ? "bg-lime-100" : "bg-transparent",
+          active ? "bg-white/60 backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/60" : "bg-transparent",
         )}
       >
         <Icon
           className={cn(
             "w-6 h-6 transition-colors duration-200",
-            active ? "text-lime-600" : "text-slate-400",
+            active ? "text-slate-800" : "text-slate-400",
           )}
         />
       </div>
       <span
         className={cn(
           "text-[10px] font-bold transition-colors duration-200 tracking-wide",
-          active ? "text-lime-600" : "text-slate-400",
+          active ? "text-slate-800" : "text-slate-400",
         )}
       >
         {label}
@@ -210,7 +210,7 @@ function ScanView() {
 
           <button
             onClick={() => setScanState("idle")}
-            className="w-full max-w-sm bg-slate-900 text-white font-bold text-lg py-4 rounded-2xl shadow-lg active:scale-95 transition-transform mt-4 shrink-0 mb-4"
+            className="w-full max-w-sm bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all mt-4 shrink-0 mb-4"
           >
             Done
           </button>
@@ -236,13 +236,13 @@ function ScanView() {
           <div className="w-full max-w-sm space-y-3 mt-4 shrink-0 mb-4">
             <button
               onClick={() => setScanState("idle")}
-              className="w-full bg-[#e11d48] text-white font-bold text-lg py-4 rounded-2xl shadow-lg active:scale-95 transition-transform"
+              className="w-full bg-[#e11d48]/80 backdrop-blur-xl border border-white/40 text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(225,29,72,0.2)] active:scale-95 transition-all"
             >
               Report Issue
             </button>
             <button
               onClick={() => setScanState("idle")}
-              className="w-full bg-white text-slate-600 font-bold text-lg py-4 rounded-2xl shadow-sm border border-slate-200 active:scale-95 transition-transform"
+              className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all"
             >
               Dismiss
             </button>
@@ -270,13 +270,13 @@ function ScanView() {
           <div className="w-full max-w-sm space-y-3 mt-4 shrink-0 mb-4">
             <button
               onClick={() => setScanState("idle")}
-              className="w-full bg-[#d97706] text-white font-bold text-lg py-4 rounded-2xl shadow-lg active:scale-95 transition-transform"
+              className="w-full bg-[#d97706]/80 backdrop-blur-xl border border-white/40 text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(217,119,6,0.2)] active:scale-95 transition-all"
             >
               Report Issue
             </button>
             <button
               onClick={() => setScanState("idle")}
-              className="w-full bg-white text-slate-600 font-bold text-lg py-4 rounded-2xl shadow-sm border border-slate-200 active:scale-95 transition-transform"
+              className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all"
             >
               Dismiss
             </button>
@@ -305,7 +305,7 @@ function ScanView() {
           onClick={handleScan}
           disabled={scanState === "scanning"}
           className={cn(
-            "w-56 h-56 rounded-full flex flex-col items-center justify-center transition-all duration-700 relative z-10 overflow-hidden shadow-xl border border-slate-200/50 bg-white",
+            "w-56 h-56 rounded-full flex flex-col items-center justify-center transition-all duration-700 relative z-10 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08)] bg-white/60 backdrop-blur-2xl border border-white/80",
             scanState === "scanning"
               ? "animate-heartbeat"
               : "active:scale-95 hover:shadow-2xl hover:border-slate-300",
@@ -467,8 +467,8 @@ function HistoryView() {
             className={cn(
               "px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-colors",
               activeCategory === cat
-                ? "bg-slate-800 text-white"
-                : "bg-white text-slate-500 border border-slate-200",
+                ? "bg-slate-800 text-white shadow-md"
+                : "bg-white/60 backdrop-blur-md text-slate-600 border border-white/60 shadow-sm",
             )}
           >
             {cat}
@@ -481,7 +481,7 @@ function HistoryView() {
         {filteredHistory.map((item) => (
           <div
             key={item.id}
-            className="bg-white p-4 rounded-[1.25rem] shadow-sm border border-slate-100 flex items-center gap-4 active:bg-slate-50 transition-colors shrink-0"
+            className="bg-white/50 backdrop-blur-xl p-4 rounded-[1.25rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 flex items-center gap-4 active:bg-white/70 transition-colors shrink-0"
           >
             <div
               className={cn(
@@ -540,7 +540,7 @@ function SettingsView() {
     <div className="p-6 pb-6 h-full overflow-y-auto">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Settings</h2>
 
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-6 flex items-center gap-4">
+      <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 mb-6 flex items-center gap-4">
         <div className="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center shrink-0">
           <User className="w-8 h-8 text-lime-600" />
         </div>
@@ -555,8 +555,8 @@ function SettingsView() {
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
             Preferences
           </div>
-          <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
-            <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors border-b border-slate-50">
+          <div className="bg-white/60 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
+            <button className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors border-b border-white/40">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Bell className="w-4 h-4 text-lime-600" />
@@ -567,7 +567,7 @@ function SettingsView() {
               </div>
               <ChevronRight className="w-5 h-5 text-slate-300" />
             </button>
-            <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
+            <button className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Shield className="w-4 h-4 text-lime-600" />
@@ -585,8 +585,8 @@ function SettingsView() {
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
             Support
           </div>
-          <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
-            <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
+          <div className="bg-white/60 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
+            <button className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <HelpCircle className="w-4 h-4 text-lime-600" />
@@ -600,7 +600,7 @@ function SettingsView() {
           </div>
         </div>
 
-        <button className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 p-4 flex items-center justify-center gap-2 active:bg-slate-50 transition-colors text-red-500 font-bold text-sm">
+        <button className="w-full bg-white/60 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 p-4 flex items-center justify-center gap-2 active:bg-white/40 transition-colors text-red-500 font-bold text-sm">
           <LogOut className="w-4 h-4" />
           Sign Out
         </button>

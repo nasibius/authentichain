@@ -22,9 +22,52 @@ export function CompanyApp() {
   const [dppModalOpen, setDppModalOpen] = useState(false);
 
   return (
-    <div className="h-full flex flex-row w-full bg-white">
+    <div className="h-full flex flex-row w-full bg-slate-50 relative overflow-hidden">
+      {/* Background Spinning Half-Sphere */}
+      <div className="absolute top-1/2 -right-[400px] -translate-y-1/2 w-[800px] h-[800px] pointer-events-none z-0 opacity-[0.25] overflow-visible">
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ perspective: "1200px" }}
+        >
+          <div 
+            className="relative w-full h-full transform-3d"
+            style={{ animation: "spin-idle-3d 240s linear infinite" }}
+          >
+            {/* Longitudinal rings */}
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={`bg-long-${i}`}
+                className="absolute rounded-full left-1/2 top-1/2 w-full h-full border-[1.5px] border-[#10b981] opacity-70"
+                style={{
+                  transform: `translate(-50%, -50%) rotateY(${i * 15}deg)`,
+                }}
+              />
+            ))}
+            {/* Latitudinal rings */}
+            {[...Array(13)].map((_, i) => {
+              const index = i - 6; // -6 to 6
+              const angle = (index / 7) * (Math.PI / 2);
+              const r = Math.cos(angle) * 400; // radius in px
+              const y = Math.sin(angle) * 400; // y in px
+              if (Math.abs(index) === 6) return null;
+              return (
+                <div
+                  key={`bg-lat-${i}`}
+                  className="absolute rounded-full left-1/2 top-1/2 border-[1.5px] border-[#10b981] opacity-70"
+                  style={{
+                    width: `${r * 2}px`,
+                    height: `${r * 2}px`,
+                    transform: `translate(-50%, -50%) rotateX(90deg) translateZ(${y}px)`,
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* Side Nav */}
-      <div className="w-64 bg-white border-r border-slate-100 p-6 flex flex-col gap-2 relative z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+      <div className="w-64 bg-white/40 backdrop-blur-2xl border-r border-white/60 p-6 flex flex-col gap-2 relative z-40 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">
           Menu
         </div>
@@ -54,7 +97,7 @@ export function CompanyApp() {
         <div className="mt-auto">
           <button
             onClick={() => setDppModalOpen(true)}
-            className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-xl p-4 shadow-[0_8px_16px_rgba(15,23,42,0.2)] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 z-30"
+            className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 hover:bg-white/80 rounded-xl p-4 shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 z-30"
           >
             <FileText className="w-5 h-5" />
             <span className="font-bold text-sm">EU Product Passport</span>
@@ -62,15 +105,8 @@ export function CompanyApp() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto w-full relative bg-slate-50/50">
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage: "radial-gradient(#e2e8f0 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-            opacity: 0.5,
-          }}
-        ></div>
+      <div className="flex-1 overflow-y-auto w-full relative bg-transparent z-10">
+
         <div className="relative z-10 h-full">
           {activeTab === "dashboard" && (
             <AdminDashboard onOpenDpp={() => setDppModalOpen(true)} />
@@ -120,8 +156,8 @@ export function CompanyApp() {
                 </pre>
               </div>
             </div>
-            <div className="p-6 bg-white border-t border-slate-100 rounded-b-[2rem] shrink-0">
-              <button className="w-full bg-slate-900 text-white font-bold text-lg py-4 rounded-2xl shadow-md flex items-center justify-center gap-2 active:scale-95 transition-transform hover:bg-slate-800">
+            <div className="p-6 bg-white/40 backdrop-blur-xl border-t border-white/60 rounded-b-[2rem] shrink-0">
+              <button className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] flex items-center justify-center gap-2 active:scale-95 transition-all hover:bg-white/80">
                 <Download className="w-5 h-5" />
                 Export Data
               </button>
@@ -140,24 +176,24 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
       className={cn(
         "flex items-center gap-3 p-3 rounded-xl transition-all duration-300 w-full text-left group",
         active
-          ? "bg-lime-100 text-lime-600"
-          : "bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700",
+          ? "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_4px_16px_rgba(0,0,0,0.04)] text-slate-800"
+          : "bg-transparent border border-transparent text-slate-500 hover:bg-white/40 hover:backdrop-blur-md hover:border-white/40",
       )}
     >
       <Icon
         className={cn(
           "w-5 h-5 transition-colors duration-200 shrink-0",
           active
-            ? "text-lime-600"
-            : "text-slate-400 group-hover:text-slate-500",
+            ? "text-slate-800"
+            : "text-slate-400 group-hover:text-slate-600",
         )}
       />
       <span
         className={cn(
           "text-sm font-bold transition-colors duration-200 tracking-wide truncate",
           active
-            ? "text-lime-600"
-            : "text-slate-600 group-hover:text-slate-800",
+            ? "text-slate-800"
+            : "text-slate-500 group-hover:text-slate-700",
         )}
       >
         {label}
@@ -224,32 +260,32 @@ function AdminDashboard({ onOpenDpp }: { onOpenDpp: () => void }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6">
-        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden h-full">
-          <div className="absolute right-0 top-0 w-32 h-32 bg-lime-50 rounded-full blur-2xl translate-x-10 -translate-y-10" />
+        <div className="bg-white/50 backdrop-blur-xl p-6 rounded-[2rem] border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.04)] relative overflow-hidden h-full">
+          <div className="absolute right-0 top-0 w-32 h-32 bg-slate-200/50 rounded-full blur-2xl translate-x-10 -translate-y-10" />
           <div className="relative z-10 flex flex-col h-full justify-between">
-            <div className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">
+            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">
               Total Scans
             </div>
             <div>
               <div className="text-4xl font-black text-slate-800 tracking-tight">
                 145,200
               </div>
-              <div className="mt-4 text-xs font-bold text-lime-600 bg-lime-50 inline-block px-3 py-1.5 rounded-full">
+              <div className="mt-4 text-xs font-bold text-lime-600 bg-white/80 backdrop-blur-md inline-block px-3 py-1.5 rounded-full shadow-sm border border-white/60">
                 +12.3% vs yesterday
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-[#ffe4e6] text-[#e11d48] p-6 rounded-[2rem] shadow-sm relative overflow-hidden h-full border border-red-100">
-          <div className="absolute right-0 top-0 w-32 h-32 bg-rose-200/50 rounded-full blur-2xl translate-x-10 -translate-y-10" />
+        <div className="bg-white/50 backdrop-blur-xl text-slate-800 p-6 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] relative overflow-hidden h-full border border-white/60">
+          <div className="absolute right-0 top-0 w-32 h-32 bg-slate-200/50 rounded-full blur-2xl translate-x-10 -translate-y-10" />
           <div className="relative z-10 flex flex-col h-full justify-between">
-            <div className="text-sm font-bold text-rose-400 uppercase tracking-wider mb-2">
+            <div className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">
               Threats Blocked
             </div>
             <div>
-              <div className="text-4xl font-black tracking-tight">3,402</div>
-              <div className="mt-4 text-xs font-bold text-[#e11d48] bg-white/60 inline-block px-3 py-1.5 rounded-full flex items-center gap-1.5 w-max shadow-sm">
-                <AlertCircle className="w-3.5 h-3.5" />
+              <div className="text-4xl font-black tracking-tight text-slate-800">3,402</div>
+              <div className="mt-4 text-xs font-bold text-slate-600 bg-white/80 backdrop-blur-md inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full shadow-sm border border-white/60 w-max">
+                <AlertCircle className="w-3.5 h-3.5 text-orange-500" />
                 Requires attention
               </div>
             </div>
@@ -268,10 +304,10 @@ function AdminDashboard({ onOpenDpp }: { onOpenDpp: () => void }) {
         {threats.map((t) => (
           <div
             key={t.id}
-            className="bg-white rounded-[1.5rem] border border-slate-100 shadow-sm overflow-hidden transition-all duration-200"
+            className="bg-white/50 backdrop-blur-xl rounded-[1.5rem] border border-white/60 shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden transition-all duration-200"
           >
             <div
-              className="p-5 flex items-start gap-4 cursor-pointer active:bg-slate-50"
+              className="p-5 flex items-start gap-4 cursor-pointer active:bg-white/60"
               onClick={() =>
                 setExpandedThreat(expandedThreat === t.id ? null : t.id)
               }
@@ -314,7 +350,7 @@ function AdminDashboard({ onOpenDpp }: { onOpenDpp: () => void }) {
               )}
             >
               <div className="overflow-hidden">
-                <div className="px-5 pb-5 pt-1 bg-slate-50 border-t border-slate-100 text-[13px] text-slate-600 font-medium">
+                <div className="px-5 pb-5 pt-1 bg-white/40 backdrop-blur-md border-t border-white/60 text-[13px] text-slate-600 font-medium">
                   <p className="leading-relaxed">{t.detail}</p>
                 </div>
               </div>
@@ -367,7 +403,7 @@ function ThreatsView() {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm relative overflow-hidden">
+        <div className="bg-white/50 backdrop-blur-xl p-5 rounded-2xl border border-white/60 shadow-[0_4px_16px_rgba(0,0,0,0.04)] relative overflow-hidden">
           <div className="absolute right-0 top-0 w-24 h-24 bg-rose-50 rounded-full blur-xl translate-x-8 -translate-y-8" />
           <div className="relative z-10">
             <div className="text-xs font-bold text-rose-400 uppercase tracking-wider mb-1">
@@ -376,7 +412,7 @@ function ThreatsView() {
             <div className="text-3xl font-black text-slate-800">12</div>
           </div>
         </div>
-        <div className="bg-white p-5 rounded-2xl border border-lime-100 shadow-sm relative overflow-hidden">
+        <div className="bg-white/50 backdrop-blur-xl p-5 rounded-2xl border border-white/60 shadow-[0_4px_16px_rgba(0,0,0,0.04)] relative overflow-hidden">
           <div className="absolute right-0 top-0 w-24 h-24 bg-lime-50 rounded-full blur-xl translate-x-8 -translate-y-8" />
           <div className="relative z-10">
             <div className="text-xs font-bold text-lime-400 uppercase tracking-wider mb-1">
@@ -394,7 +430,7 @@ function ThreatsView() {
         {threats.map((t) => (
           <div
             key={t.id}
-            className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden"
+            className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/60 shadow-[0_4px_16px_rgba(0,0,0,0.04)] overflow-hidden"
           >
             <div className="p-5 flex items-start gap-4">
               <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
@@ -408,14 +444,14 @@ function ThreatsView() {
                   </div>
                 </div>
                 <div className="text-sm text-slate-600 mb-2">{t.product}</div>
-                <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <div className="text-xs text-slate-500 bg-white/40 backdrop-blur-md p-3 rounded-xl border border-white/60 shadow-sm">
                   {t.detail}
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <button className="text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors">
+                  <button className="text-xs font-bold bg-white/60 backdrop-blur-md border border-white/60 text-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.05)] px-4 py-2 rounded-lg hover:bg-white/80 transition-all">
                     Investigate
                   </button>
-                  <button className="text-xs font-bold bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors">
+                  <button className="text-xs font-bold bg-white/30 backdrop-blur-md border border-white/40 text-slate-600 px-4 py-2 rounded-lg hover:bg-white/50 transition-all">
                     Dismiss
                   </button>
                 </div>
@@ -433,7 +469,7 @@ function AdminSettingsView() {
     <div className="p-6 pb-6 h-full overflow-y-auto">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Settings</h2>
 
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-6 flex items-center gap-4">
+      <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 mb-6 flex items-center gap-4">
         <div className="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center shrink-0">
           <Building className="w-8 h-8 text-lime-600" />
         </div>
@@ -448,8 +484,8 @@ function AdminSettingsView() {
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
             Company
           </div>
-          <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
-            <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors border-b border-slate-50">
+          <div className="bg-white/50 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
+            <button className="w-full flex items-center justify-between p-4 hover:bg-white/60 transition-colors border-b border-white/40">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Users className="w-4 h-4 text-lime-600" />
@@ -460,7 +496,7 @@ function AdminSettingsView() {
               </div>
               <ChevronRight className="w-5 h-5 text-slate-300" />
             </button>
-            <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+            <button className="w-full flex items-center justify-between p-4 hover:bg-white/60 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Shield className="w-4 h-4 text-lime-600" />
@@ -478,8 +514,8 @@ function AdminSettingsView() {
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
             System
           </div>
-          <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
-            <button className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+          <div className="bg-white/50 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
+            <button className="w-full flex items-center justify-between p-4 hover:bg-white/60 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Bell className="w-4 h-4 text-lime-600" />
@@ -493,7 +529,7 @@ function AdminSettingsView() {
           </div>
         </div>
 
-        <button className="w-full bg-white rounded-[1.5rem] shadow-sm border border-slate-100 p-4 flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors text-red-500 font-bold text-sm">
+        <button className="w-full bg-white/50 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 p-4 flex items-center justify-center gap-2 hover:bg-white/70 transition-all text-red-500 font-bold text-sm">
           <LogOut className="w-4 h-4" />
           Sign Out
         </button>
