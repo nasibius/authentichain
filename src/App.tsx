@@ -35,13 +35,18 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-white sm:bg-slate-900 flex flex-col items-center justify-center sm:p-8 font-sans selection:bg-emerald-200 selection:text-emerald-900 transition-all duration-500">
+    <div
+      className={cn(
+        "min-h-[100dvh] flex flex-col items-center justify-center font-sans selection:bg-emerald-200 selection:text-emerald-900 transition-all duration-500",
+        isCompanyMode ? "bg-white" : "bg-white sm:bg-slate-900 sm:p-8",
+      )}
+    >
       <div
         className={cn(
-          "bg-white overflow-hidden relative shadow-2xl flex flex-col transition-all duration-500",
+          "bg-white overflow-hidden relative flex flex-col transition-all duration-500",
           isCompanyMode
-            ? "w-full h-[100dvh] sm:rounded-2xl sm:w-[1200px] sm:h-[800px] sm:ring-1 sm:ring-slate-800"
-            : "w-full sm:w-[393px] h-[100dvh] sm:h-[852px] sm:rounded-[3rem] sm:ring-8 sm:ring-slate-800",
+            ? "w-full h-[100dvh]"
+            : "w-full sm:w-[393px] h-[100dvh] sm:h-[852px] sm:rounded-[3rem] shadow-2xl sm:ring-8 sm:ring-slate-800",
         )}
       >
         {/* Dynamic Island fake for desktop preview */}
@@ -86,12 +91,14 @@ export default function App() {
         </div>
       </div>
 
-      <div className="mt-8 text-slate-400 text-sm hidden sm:block text-center space-y-1">
-        <p>Mobile App Preview</p>
-        <p className="opacity-60 text-xs">
-          Hint: Triple-tap the header to toggle Admin Mode
-        </p>
-      </div>
+      {!isCompanyMode && (
+        <div className="mt-8 text-slate-400 text-sm hidden sm:block text-center space-y-1">
+          <p>Mobile App Preview</p>
+          <p className="opacity-60 text-xs">
+            Hint: Triple-tap the header to toggle Admin Mode
+          </p>
+        </div>
+      )}
     </div>
   );
 }
