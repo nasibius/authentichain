@@ -28,7 +28,7 @@ export function ConsumerApp() {
       </div>
 
       {/* Bottom Nav */}
-      <div className="bg-white/90 backdrop-blur-xl border-t border-emerald-100 pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
+      <div className="bg-white/90 backdrop-blur-xl border-t border-lime-100 pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
         <NavButton
           id="scan"
           icon={ScanLine}
@@ -64,20 +64,20 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
       <div
         className={cn(
           "p-1.5 rounded-xl transition-all duration-300",
-          active ? "bg-emerald-100" : "bg-transparent",
+          active ? "bg-lime-100" : "bg-transparent",
         )}
       >
         <Icon
           className={cn(
             "w-6 h-6 transition-colors duration-200",
-            active ? "text-emerald-600" : "text-slate-400",
+            active ? "text-lime-600" : "text-slate-400",
           )}
         />
       </div>
       <span
         className={cn(
           "text-[10px] font-bold transition-colors duration-200 tracking-wide",
-          active ? "text-emerald-600" : "text-slate-400",
+          active ? "text-lime-600" : "text-slate-400",
         )}
       >
         {label}
@@ -292,11 +292,11 @@ function ScanView() {
         {scanState === "scanning" && (
           <>
             <div
-              className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-30 scale-150"
+              className="absolute inset-0 bg-lime-400 rounded-full animate-ping opacity-30 scale-150"
               style={{ animationDuration: "2s" }}
             ></div>
             <div
-              className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-30 scale-125"
+              className="absolute inset-0 bg-lime-400 rounded-full animate-ping opacity-30 scale-125"
               style={{ animationDuration: "2s", animationDelay: "0.5s" }}
             ></div>
           </>
@@ -454,7 +454,7 @@ function HistoryView() {
           placeholder="Search history..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm"
+          className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-lime-500/20 focus:border-lime-500 transition-all shadow-sm"
         />
       </div>
 
@@ -541,8 +541,8 @@ function SettingsView() {
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Settings</h2>
 
       <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-6 flex items-center gap-4">
-        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
-          <User className="w-8 h-8 text-emerald-600" />
+        <div className="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center shrink-0">
+          <User className="w-8 h-8 text-lime-600" />
         </div>
         <div>
           <div className="font-bold text-slate-800 text-lg">Huseyn Aliyev</div>
@@ -558,8 +558,8 @@ function SettingsView() {
           <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
             <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors border-b border-slate-50">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                  <Bell className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-lime-600" />
                 </div>
                 <span className="font-medium text-slate-700 text-sm">
                   Push Notifications
@@ -569,8 +569,8 @@ function SettingsView() {
             </button>
             <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-lime-600" />
                 </div>
                 <span className="font-medium text-slate-700 text-sm">
                   Privacy & Security
@@ -588,8 +588,8 @@ function SettingsView() {
           <div className="bg-white rounded-[1.5rem] shadow-sm border border-slate-100 overflow-hidden">
             <button className="w-full flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                  <HelpCircle className="w-4 h-4 text-emerald-600" />
+                <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4 text-lime-600" />
                 </div>
                 <span className="font-medium text-slate-700 text-sm">
                   Help Center

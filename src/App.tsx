@@ -37,7 +37,7 @@ export default function App() {
   return (
     <div
       className={cn(
-        "min-h-[100dvh] flex flex-col items-center justify-center font-sans selection:bg-emerald-200 selection:text-emerald-900 transition-all duration-500",
+        "min-h-[100dvh] flex flex-col items-center justify-center font-sans selection:bg-lime-200 selection:text-lime-900 transition-all duration-500",
         isCompanyMode ? "bg-white" : "bg-white sm:bg-slate-900 sm:p-8",
       )}
     >
@@ -59,7 +59,7 @@ export default function App() {
         {/* Global Header */}
         <div
           onClick={handleHeaderTap}
-          className="pt-safe sm:pt-6 pb-3 px-3 flex items-center gap-3 cursor-pointer select-none bg-white/80 backdrop-blur-md border-b border-emerald-100 z-40 relative shrink-0"
+          className="pt-safe sm:pt-6 pb-3 px-3 flex items-center gap-3 cursor-pointer select-none bg-white/80 backdrop-blur-md border-b border-lime-100 z-40 relative shrink-0"
         >
           <img
             src="/logo.png"
@@ -67,7 +67,7 @@ export default function App() {
             className="h-8 object-contain mt-[10px]"
           />
           {isCompanyMode && (
-            <span className="ml-auto text-[10px] uppercase tracking-wider font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
+            <span className="ml-auto text-[10px] uppercase tracking-wider font-bold text-lime-600 bg-lime-100 px-2 py-1 rounded-full">
               Admin
             </span>
           )}
