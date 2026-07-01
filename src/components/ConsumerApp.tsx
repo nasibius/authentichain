@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   History,
   ScanLine,
@@ -13,40 +13,223 @@ import {
   Shield,
   HelpCircle,
   LogOut,
+  ArrowLeft,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 
+const TRANSLATIONS: any = {
+  en: {
+    scan: "Scan",
+    history: "History",
+    settings: "Settings",
+    nfcDisabled: "NFC is Disabled",
+    nfcMessage: "Please turn on NFC in your device settings to scan smart tags.",
+    turnOnNfc: "Turn On NFC",
+    dismiss: "Dismiss",
+    authentic: "Authentic Product",
+    fake: "Counterfeit Detected",
+    suspicious: "Suspicious Activity",
+    authenticMsg: "Verified successfully",
+    fakeMsg: "This product could not be verified.",
+    suspiciousMsg: "This tag has been scanned multiple times.",
+    reportIssue: "Report Issue",
+    issueReported: "Issue Reported",
+    done: "Done",
+    all: "All",
+    authenticTab: "Authentic",
+    counterfeitTab: "Counterfeit",
+    suspiciousTab: "Suspicious",
+    preferences: "Preferences",
+    pushNotifications: "Push Notifications",
+    appSounds: "App Sounds",
+    hapticFeedback: "Haptic Feedback",
+    language: "Language",
+    fontSize: "Font Size",
+    support: "Support",
+    helpCenter: "Help Center",
+    privacySecurity: "Privacy & Security",
+    signOut: "Sign Out",
+    scanning: "Scanning...",
+    holdNear: "Hold your phone near the smart tag",
+    unknownProduct: "Unknown Product",
+    today: "Today",
+    yesterday: "Yesterday",
+    teamMembers: "Team Members",
+    manufacturer: "Manufacturer",
+    product: "Product",
+    productionDate: "Production Date",
+    location: "Location",
+    batch: "Batch",
+    nfcUid: "NFC UID",
+    origin: "Origin",
+    mfgDate: "Mfg Date",
+    warranty: "Warranty",
+    distributor: "Distributor",
+    carbonFootprint: "Carbon Footprint",
+    verification: "Verification",
+    secure: "Secure",
+    tapToVerify: "Tap to Verify",
+    establishing: "Establishing secure connection...",
+    bringPhone: "Bring your phone close to the smart tag."
+  },
+  tr: {
+    scan: "Tara",
+    history: "Geçmiş",
+    settings: "Ayarlar",
+    nfcDisabled: "NFC Kapalı",
+    nfcMessage: "Akıllı etiketleri taramak için lütfen cihaz ayarlarınızdan NFC'yi açın.",
+    turnOnNfc: "NFC'yi Aç",
+    dismiss: "Kapat",
+    authentic: "Orijinal Ürün",
+    fake: "Sahte Ürün Tespit Edildi",
+    suspicious: "Şüpheli Aktivite",
+    authenticMsg: "Başarıyla doğrulandı",
+    fakeMsg: "Bu ürün doğrulanamadı.",
+    suspiciousMsg: "Bu etiket birden fazla kez tarandı.",
+    reportIssue: "Sorun Bildir",
+    issueReported: "Sorun Bildirildi",
+    done: "Bitti",
+    all: "Tümü",
+    authenticTab: "Orijinal",
+    counterfeitTab: "Sahte",
+    suspiciousTab: "Şüpheli",
+    preferences: "Tercihler",
+    pushNotifications: "Anlık Bildirimler",
+    appSounds: "Uygulama Sesleri",
+    hapticFeedback: "Titreşim",
+    language: "Dil",
+    fontSize: "Yazı Tipi Boyutu",
+    support: "Destek",
+    helpCenter: "Yardım Merkezi",
+    privacySecurity: "Gizlilik ve Güvenlik",
+    signOut: "Çıkış Yap",
+    scanning: "Taranıyor...",
+    holdNear: "Telefonunuzu akıllı etikete yaklaştırın",
+    unknownProduct: "Bilinmeyen Ürün",
+    today: "Bugün",
+    yesterday: "Dün",
+    teamMembers: "Ekip Üyeleri",
+    manufacturer: "Üretici",
+    product: "Ürün",
+    productionDate: "Üretim Tarihi",
+    location: "Konum",
+    batch: "Parti No",
+    nfcUid: "NFC UID",
+    origin: "Menşei",
+    mfgDate: "Üretim Tarihi",
+    warranty: "Garanti",
+    distributor: "Distribütör",
+    carbonFootprint: "Karbon Ayak İzi",
+    verification: "Doğrulama",
+    secure: "Güvenli",
+    tapToVerify: "Doğrulamak için Dokunun",
+    establishing: "Güvenli bağlantı kuruluyor...",
+    bringPhone: "Telefonunuzu akıllı etikete yaklaştırın."
+  }
+};
+
 export function ConsumerApp() {
   const [activeTab, setActiveTab] = useState("scan");
+  
+  // Settings state
+  const [settings, setSettings] = useState({
+    pushNotifications: true,
+    soundEnabled: true,
+    hapticsEnabled: true,
+    language: "en",
+    fontSize: "medium"
+  });
+
+  useEffect(() => {
+    const sizeMap: any = { small: "14px", medium: "16px", large: "18px" };
+    document.documentElement.style.fontSize = sizeMap[settings.fontSize] || "16px";
+  }, [settings.fontSize]);
+
+  const t = TRANSLATIONS[settings.language] || TRANSLATIONS.en;
+
+  // History state
+  const [history, setHistory] = useState([
+    {
+      id: 1,
+      name: "Luxury Cognac XO",
+      time: "Today, 10:42",
+      status: "success",
+      product: PRODUCTS[2],
+    },
+    {
+      id: 2,
+      name: "Premium Swiss Chronograph",
+      time: "Yesterday, 14:20",
+      status: "success",
+      product: PRODUCTS[0],
+    }
+  ]);
+  
+  const [nfcEnabled, setNfcEnabled] = useState(false);
+  
+  const [viewedHistoryItem, setViewedHistoryItem] = useState<any>(null);
+
+  const addScanToHistory = (status: string, product: typeof PRODUCTS[0]) => {
+    const newItem = {
+      id: Date.now(),
+      name: product?.name || t.unknownProduct,
+      time: `${t.today}, ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+      status,
+      product
+    };
+    setHistory([newItem, ...history]);
+  };
 
   return (
     <div className="h-full flex flex-col w-full">
       <div className="flex-1 overflow-y-auto w-full relative">
-        {activeTab === "scan" && <ScanView />}
-        {activeTab === "history" && <HistoryView />}
-        {activeTab === "settings" && <SettingsView />}
+        {activeTab === "scan" && (
+          <ScanView 
+            nfcEnabled={nfcEnabled} 
+            setNfcEnabled={setNfcEnabled} 
+            addScanToHistory={addScanToHistory}
+            viewedItem={viewedHistoryItem}
+            setViewedItem={setViewedHistoryItem}
+            t={t}
+          />
+        )}
+        {activeTab === "history" && (
+          <HistoryView 
+            history={history} 
+            onViewItem={(item) => {
+              setViewedHistoryItem({
+                status: item.status,
+                product: item.product,
+                scanTimes: item.status === "suspicious" ? 3 : 1
+              });
+              setActiveTab("scan");
+            }}
+            t={t}
+          />
+        )}
+        {activeTab === "settings" && <SettingsView settings={settings} setSettings={setSettings} t={t} />}
       </div>
 
       {/* Bottom Nav */}
-      <div className="bg-white/60 backdrop-blur-2xl border-t border-white/60 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
+      <div className="bg-white/70 backdrop-blur-[20px] backdrop-saturate-[180%] border-t border-white/50 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
         <NavButton
           id="scan"
           icon={ScanLine}
-          label="Scan"
+          label={t.scan}
           active={activeTab === "scan"}
           onClick={() => setActiveTab("scan")}
         />
         <NavButton
           id="history"
           icon={History}
-          label="History"
+          label={t.history}
           active={activeTab === "history"}
           onClick={() => setActiveTab("history")}
         />
         <NavButton
           id="settings"
           icon={Settings}
-          label="Settings"
+          label={t.settings}
           active={activeTab === "settings"}
           onClick={() => setActiveTab("settings")}
         />
@@ -64,7 +247,7 @@ function NavButton({ icon: Icon, label, active, onClick }: any) {
       <div
         className={cn(
           "p-1.5 rounded-xl transition-all duration-300",
-          active ? "bg-white/60 backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/60" : "bg-transparent",
+          active ? "bg-white/70 backdrop-blur-[20px] backdrop-saturate-[180%] shadow-[0_4px_12px_rgba(0,0,0,0.08)] border border-white/50" : "bg-transparent",
         )}
       >
         <Icon
@@ -113,33 +296,102 @@ const PRODUCTS = [
   },
 ];
 
-function ScanView() {
+function ScanView({ nfcEnabled, setNfcEnabled, addScanToHistory, viewedItem, setViewedItem, t }: any) {
   const [scanState, setScanState] = useState<
-    "idle" | "scanning" | "success" | "fake" | "suspicious"
+    "idle" | "scanning" | "success" | "fake" | "suspicious" | "nfc_error"
   >("idle");
   const [scannedProduct, setScannedProduct] = useState(PRODUCTS[0]);
   const [scanTimes, setScanTimes] = useState(0);
 
+  const [reported, setReported] = useState(false);
+
+  // If we clicked an item from history, show it immediately
+  if (viewedItem && scanState === "idle") {
+    setScanState(viewedItem.status);
+    setScannedProduct(viewedItem.product || PRODUCTS[0]);
+    setScanTimes(viewedItem.scanTimes || 1);
+  }
+
+  const handleDone = () => {
+    setScanState("idle");
+    setReported(false);
+    if (viewedItem) setViewedItem(null);
+  };
+
+  const handleReport = () => {
+    setReported(true);
+    setTimeout(() => {
+      handleDone();
+    }, 2000);
+  };
+
   const handleScan = () => {
+    if (!nfcEnabled) {
+      setScanState("nfc_error");
+      return;
+    }
+
     setScanState("scanning");
     setTimeout(() => {
       const rand = Math.random();
+      let newStatus: any = "fake";
+      let product = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
+      
       if (rand > 0.6) {
-        setScannedProduct(
-          PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)],
-        );
-        setScanState("success");
+        newStatus = "success";
       } else if (rand > 0.3) {
-        setScannedProduct(
-          PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)],
-        );
+        newStatus = "suspicious";
         setScanTimes(Math.floor(Math.random() * 5) + 1); // 1 to 5 times
-        setScanState("suspicious");
       } else {
-        setScanState("fake");
+        newStatus = "fake";
       }
+      
+      setScannedProduct(product);
+      setScanState(newStatus);
+      addScanToHistory(newStatus, product);
     }, 2500);
   };
+
+  if (scanState === "nfc_error") {
+    return (
+      <div className="absolute inset-0 overflow-y-auto bg-gradient-to-b from-white to-slate-50 animate-in fade-in zoom-in-95 duration-300">
+        <div className="min-h-full flex flex-col items-center justify-center p-6 py-12">
+          <div className="w-20 h-20 bg-slate-100 text-slate-400 rounded-[1.5rem] flex items-center justify-center mb-6 shadow-sm border border-slate-200 shrink-0 mt-4">
+            <ScanLine className="w-10 h-10" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2 tracking-tight text-center">
+            {t.nfcDisabled}
+          </h2>
+          <p className="text-slate-500 text-center mb-8 text-sm font-medium px-4">
+            {t.nfcMessage}
+          </p>
+          <div className="w-full max-w-sm space-y-3 mt-4 shrink-0 mb-4">
+            <button
+              onClick={() => {
+                setNfcEnabled(true);
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+                if (isIOS) {
+                  window.location.href = "App-Prefs:root=General";
+                } else {
+                  window.location.href = "intent://#Intent;action=android.settings.NFC_SETTINGS;end";
+                }
+                setTimeout(() => setScanState("idle"), 1000);
+              }}
+              className="w-full bg-slate-900 text-white font-bold text-lg py-4 rounded-2xl shadow-lg active:scale-95 transition-transform"
+            >
+              {t.turnOnNfc}
+            </button>
+            <button
+              onClick={() => setScanState("idle")}
+              className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all"
+            >
+              {t.dismiss}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (scanState === "success") {
     return (
@@ -149,10 +401,10 @@ function ScanView() {
             <CheckCircle className="w-10 h-10" />
           </div>
           <h2 className="text-2xl font-bold text-slate-800 mb-1 tracking-tight">
-            Authentic Product
+            {t.authentic}
           </h2>
           <p className="text-[#16a34a] font-medium text-center mb-6 text-sm">
-            Verified successfully
+            {t.authenticMsg}
           </p>
 
           <div className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-6 flex flex-col items-center">
@@ -164,55 +416,55 @@ function ScanView() {
             </div>
             <div className="w-full space-y-3 pt-4 border-t border-slate-50">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Manufacturer</span>
+                <span className="text-sm text-slate-500">{t.manufacturer}</span>
                 <span className="text-sm font-medium text-slate-800">
-                  NovaTech Inc.
+                  CAVIDOĞLU
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Origin</span>
+                <span className="text-sm text-slate-500">{t.origin}</span>
                 <span className="text-sm font-medium text-slate-800">
                   Geneva, Switzerland
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Mfg Date</span>
+                <span className="text-sm text-slate-500">{t.mfgDate}</span>
                 <span className="text-sm font-medium text-slate-800">
                   2026-05-14
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Warranty</span>
+                <span className="text-sm text-slate-500">{t.warranty}</span>
                 <span className="text-sm font-medium text-slate-800">
                   Valid until 2028
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Distributor</span>
+                <span className="text-sm text-slate-500">{t.distributor}</span>
                 <span className="text-sm font-medium text-slate-800">
                   Global Tech Supply
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Carbon Footprint</span>
+                <span className="text-sm text-slate-500">{t.carbonFootprint}</span>
                 <span className="text-sm font-medium text-slate-800">
                   12 kg CO2e
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">Verification</span>
+                <span className="text-sm text-slate-500">{t.verification}</span>
                 <span className="text-sm font-medium text-green-600">
-                  Secure
+                  {t.secure}
                 </span>
               </div>
             </div>
           </div>
 
           <button
-            onClick={() => setScanState("idle")}
+            onClick={handleDone}
             className="w-full max-w-sm bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all mt-4 shrink-0 mb-4"
           >
-            Done
+            {t.done}
           </button>
         </div>
       </div>
@@ -227,24 +479,26 @@ function ScanView() {
             <ShieldAlert className="w-10 h-10" />
           </div>
           <h2 className="text-2xl font-bold text-slate-800 mb-2 tracking-tight text-center">
-            Warning: Counterfeit
+            {t.fake}
           </h2>
           <p className="text-[#e11d48] text-center mb-8 text-sm font-medium">
-            This tag is invalid or has been cloned. Do not consume.
+            {t.fakeMsg}
           </p>
 
           <div className="w-full max-w-sm space-y-3 mt-4 shrink-0 mb-4">
             <button
-              onClick={() => setScanState("idle")}
-              className="w-full bg-[#e11d48]/80 backdrop-blur-xl border border-white/40 text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(225,29,72,0.2)] active:scale-95 transition-all"
+              onClick={handleReport}
+              disabled={reported}
+              className="w-full flex items-center justify-center gap-2 bg-[#e11d48]/80 backdrop-blur-xl border border-white/40 text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(225,29,72,0.2)] active:scale-95 transition-all disabled:opacity-50"
             >
-              Report Issue
+              {reported ? <CheckCircle className="w-5 h-5" /> : null}
+              {reported ? t.issueReported : t.reportIssue}
             </button>
             <button
-              onClick={() => setScanState("idle")}
+              onClick={handleDone}
               className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all"
             >
-              Dismiss
+              {t.dismiss}
             </button>
           </div>
         </div>
@@ -260,25 +514,26 @@ function ScanView() {
             <AlertTriangle className="w-10 h-10" />
           </div>
           <h2 className="text-2xl font-bold text-slate-800 mb-2 tracking-tight text-center">
-            Suspicious Activity
+            {t.suspicious}
           </h2>
           <p className="text-[#d97706] text-center mb-8 text-sm font-medium">
-            This tag is suspicious. It was scanned {scanTimes}{" "}
-            {scanTimes === 1 ? "time" : "times"} already.
+            {t.suspiciousMsg}
           </p>
 
           <div className="w-full max-w-sm space-y-3 mt-4 shrink-0 mb-4">
             <button
-              onClick={() => setScanState("idle")}
-              className="w-full bg-[#d97706]/80 backdrop-blur-xl border border-white/40 text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(217,119,6,0.2)] active:scale-95 transition-all"
+              onClick={handleReport}
+              disabled={reported}
+              className="w-full flex items-center justify-center gap-2 bg-[#d97706]/80 backdrop-blur-xl border border-white/40 text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(217,119,6,0.2)] active:scale-95 transition-all disabled:opacity-50"
             >
-              Report Issue
+              {reported ? <CheckCircle className="w-5 h-5" /> : null}
+              {reported ? t.issueReported : t.reportIssue}
             </button>
             <button
-              onClick={() => setScanState("idle")}
+              onClick={handleDone}
               className="w-full bg-white/60 backdrop-blur-xl border border-white/60 text-slate-800 font-bold text-lg py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.05)] active:scale-95 transition-all"
             >
-              Dismiss
+              {t.dismiss}
             </button>
           </div>
         </div>
@@ -364,7 +619,7 @@ function ScanView() {
               )}
             />
             <span className="font-bold text-lg tracking-wide drop-shadow-sm">
-              {scanState === "scanning" ? "Scanning..." : "Tap to Verify"}
+              {scanState === "scanning" ? t.scanning : (t.tapToVerify || "Tap to Verify")}
             </span>
           </div>
         </button>
@@ -372,65 +627,20 @@ function ScanView() {
 
       <p className="text-slate-500 text-center px-4 font-medium text-[15px]">
         {scanState === "scanning"
-          ? "Establishing secure connection..."
-          : "Bring your phone close to the smart tag."}
+          ? (t.establishing || "Establishing secure connection...")
+          : (t.bringPhone || "Bring your phone close to the smart tag.")}
       </p>
     </div>
   );
 }
 
-function HistoryView() {
+function HistoryView({ history, onViewItem, t }: any) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
   const categories = ["All", "Verified", "Suspicious", "Fake"];
 
-  const history = [
-    {
-      id: 1,
-      name: "Luxury Cognac XO",
-      time: "Today, 10:42",
-      status: "success",
-    },
-    {
-      id: 2,
-      name: "Premium Swiss Chronograph",
-      time: "Yesterday, 14:20",
-      status: "success",
-    },
-    {
-      id: 3,
-      name: "Organic Reserve Olive Oil",
-      time: "Oct 12, 09:15",
-      status: "fake",
-    },
-    {
-      id: 4,
-      name: "Artisan Leather Handbag",
-      time: "Oct 10, 16:30",
-      status: "success",
-    },
-    {
-      id: 5,
-      name: "Vintage Bordeaux Wine",
-      time: "Oct 08, 11:20",
-      status: "suspicious",
-    },
-    {
-      id: 6,
-      name: "Designer Sunglasses",
-      time: "Oct 05, 15:45",
-      status: "fake",
-    },
-    {
-      id: 7,
-      name: "Organic Honey",
-      time: "Oct 01, 08:30",
-      status: "success",
-    },
-  ];
-
-  const filteredHistory = history.filter((item) => {
+  const filteredHistory = history.filter((item: any) => {
     const matchesSearch = item.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
@@ -442,16 +652,24 @@ function HistoryView() {
     return matchesSearch && matchesCategory;
   });
 
+  const categoryLabel = (cat: string) => {
+    if (cat === "All") return t.all || "All";
+    if (cat === "Verified") return t.authenticTab || "Authentic";
+    if (cat === "Suspicious") return t.suspiciousTab || "Suspicious";
+    if (cat === "Fake") return t.counterfeitTab || "Counterfeit";
+    return cat;
+  };
+
   return (
     <div className="p-6 pb-0 h-full flex flex-col">
-      <h2 className="text-2xl font-bold text-slate-800 mb-4">Recent Scans</h2>
+      <h2 className="text-2xl font-bold text-slate-800 mb-4">{t.history}</h2>
 
       {/* Search Bar */}
       <div className="relative mb-4 shrink-0">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
         <input
           type="text"
-          placeholder="Search history..."
+          placeholder={t.searchHistory || "Search history..."}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-lime-500/20 focus:border-lime-500 transition-all shadow-sm"
@@ -471,17 +689,18 @@ function HistoryView() {
                 : "bg-white/60 backdrop-blur-md text-slate-600 border border-white/60 shadow-sm",
             )}
           >
-            {cat}
+            {categoryLabel(cat)}
           </button>
         ))}
       </div>
 
       {/* List */}
       <div className="space-y-3 overflow-y-auto flex-1 pr-1 pb-0">
-        {filteredHistory.map((item) => (
+        {filteredHistory.map((item: any) => (
           <div
             key={item.id}
-            className="bg-white/50 backdrop-blur-xl p-4 rounded-[1.25rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 flex items-center gap-4 active:bg-white/70 transition-colors shrink-0"
+            onClick={() => onViewItem(item)}
+            className="cursor-pointer bg-white/50 backdrop-blur-xl p-4 rounded-[1.25rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 flex items-center gap-4 active:bg-white/70 transition-colors shrink-0"
           >
             <div
               className={cn(
@@ -518,8 +737,8 @@ function HistoryView() {
                 {item.status === "success"
                   ? item.time
                   : item.status === "suspicious"
-                    ? "Suspicious Activity"
-                    : "Counterfeit Warning"}
+                    ? t.suspicious
+                    : t.fake}
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-slate-300 shrink-0" />
@@ -527,7 +746,7 @@ function HistoryView() {
         ))}
         {filteredHistory.length === 0 && (
           <div className="text-center py-10 text-slate-400 text-sm">
-            No scans found.
+            {t.noScans || "No scans found."}
           </div>
         )}
       </div>
@@ -535,10 +754,35 @@ function HistoryView() {
   );
 }
 
-function SettingsView() {
+function SettingsView({ settings, setSettings, t }: any) {
+  const [showHelp, setShowHelp] = useState(false);
+
+  const toggleSetting = (key: keyof typeof settings) => {
+    setSettings((prev: any) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  if (showHelp) {
+    return (
+      <div className="p-6 h-full overflow-y-auto">
+        <div className="flex items-center gap-4 mb-6">
+          <button onClick={() => setShowHelp(false)} className="p-2 bg-white/60 rounded-full shadow-sm hover:bg-white/80 active:scale-95 transition-all">
+            <ArrowLeft className="w-5 h-5 text-slate-700" />
+          </button>
+          <h2 className="text-2xl font-bold text-slate-800 tracking-tight">{t.helpCenter}</h2>
+        </div>
+        
+        <div className="bg-white/60 backdrop-blur-xl rounded-[1.5rem] p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 mb-6">
+          <p className="text-slate-600 text-sm">
+            Please contact support if you have any issues with the application.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 pb-6 h-full overflow-y-auto">
-      <h2 className="text-2xl font-bold text-slate-800 mb-6">Settings</h2>
+      <h2 className="text-2xl font-bold text-slate-800 mb-6">{t.settings}</h2>
 
       <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 mb-6 flex items-center gap-4">
         <div className="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center shrink-0">
@@ -553,46 +797,105 @@ function SettingsView() {
       <div className="space-y-6">
         <div>
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
-            Preferences
+            {t.preferences}
           </div>
           <div className="bg-white/60 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
-            <button className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors border-b border-white/40">
+            <button 
+              onClick={() => toggleSetting('pushNotifications')}
+              className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors border-b border-white/40"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Bell className="w-4 h-4 text-lime-600" />
                 </div>
                 <span className="font-medium text-slate-700 text-sm">
-                  Push Notifications
+                  {t.pushNotifications}
                 </span>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-300" />
+              <div className={cn("w-10 h-6 rounded-full transition-colors flex items-center px-1 border", settings.pushNotifications ? "bg-lime-500 border-lime-600" : "bg-slate-200 border-slate-300")}>
+                <div className={cn("w-4 h-4 bg-white rounded-full shadow-sm transition-transform", settings.pushNotifications ? "translate-x-4" : "translate-x-0")} />
+              </div>
             </button>
-            <button className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors">
+            <button 
+              onClick={() => toggleSetting('soundEnabled')}
+              className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors border-b border-white/40"
+            >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <Shield className="w-4 h-4 text-lime-600" />
                 </div>
                 <span className="font-medium text-slate-700 text-sm">
-                  Privacy & Security
+                  {t.appSounds}
                 </span>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-300" />
+              <div className={cn("w-10 h-6 rounded-full transition-colors flex items-center px-1 border", settings.soundEnabled ? "bg-lime-500 border-lime-600" : "bg-slate-200 border-slate-300")}>
+                <div className={cn("w-4 h-4 bg-white rounded-full shadow-sm transition-transform", settings.soundEnabled ? "translate-x-4" : "translate-x-0")} />
+              </div>
             </button>
+            <button 
+              onClick={() => toggleSetting('hapticsEnabled')}
+              className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors border-b border-white/40"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
+                  <ShieldAlert className="w-4 h-4 text-lime-600" />
+                </div>
+                <span className="font-medium text-slate-700 text-sm">
+                  {t.hapticFeedback}
+                </span>
+              </div>
+              <div className={cn("w-10 h-6 rounded-full transition-colors flex items-center px-1 border", settings.hapticsEnabled ? "bg-lime-500 border-lime-600" : "bg-slate-200 border-slate-300")}>
+                <div className={cn("w-4 h-4 bg-white rounded-full shadow-sm transition-transform", settings.hapticsEnabled ? "translate-x-4" : "translate-x-0")} />
+              </div>
+            </button>
+            <div className="w-full flex items-center justify-between p-4 border-b border-white/40">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
+                  <User className="w-4 h-4 text-lime-600" />
+                </div>
+                <span className="font-medium text-slate-700 text-sm">{t.language}</span>
+              </div>
+              <select 
+                value={settings.language} 
+                onChange={(e) => setSettings((prev: any) => ({ ...prev, language: e.target.value }))}
+                className="bg-transparent text-slate-700 text-sm font-medium outline-none text-right cursor-pointer"
+              >
+                <option value="en">English</option>
+                <option value="tr">Turkish</option>
+              </select>
+            </div>
+            <div className="w-full flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
+                  <Search className="w-4 h-4 text-lime-600" />
+                </div>
+                <span className="font-medium text-slate-700 text-sm">{t.fontSize}</span>
+              </div>
+              <select 
+                value={settings.fontSize} 
+                onChange={(e) => setSettings((prev: any) => ({ ...prev, fontSize: e.target.value }))}
+                className="bg-transparent text-slate-700 text-sm font-medium outline-none text-right cursor-pointer"
+              >
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
           </div>
         </div>
 
         <div>
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2">
-            Support
+            {t.support}
           </div>
           <div className="bg-white/60 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
-            <button className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors">
+            <button onClick={() => setShowHelp(true)} className="w-full flex items-center justify-between p-4 active:bg-white/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-lime-50 flex items-center justify-center">
                   <HelpCircle className="w-4 h-4 text-lime-600" />
                 </div>
                 <span className="font-medium text-slate-700 text-sm">
-                  Help Center
+                  {t.helpCenter}
                 </span>
               </div>
               <ChevronRight className="w-5 h-5 text-slate-300" />
@@ -602,7 +905,7 @@ function SettingsView() {
 
         <button className="w-full bg-white/60 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-white/60 p-4 flex items-center justify-center gap-2 active:bg-white/40 transition-colors text-red-500 font-bold text-sm">
           <LogOut className="w-4 h-4" />
-          Sign Out
+          {t.signOut}
         </button>
       </div>
     </div>
