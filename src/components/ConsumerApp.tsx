@@ -183,7 +183,6 @@ export function ConsumerApp() {
   return (
     <div className="h-full flex flex-col w-full">
       <div className="flex-1 overflow-y-auto w-full relative">
-        {activeTab === "scan" && (
           <ScanView 
             nfcEnabled={nfcEnabled} 
             setNfcEnabled={setNfcEnabled} 
@@ -192,47 +191,6 @@ export function ConsumerApp() {
             setViewedItem={setViewedHistoryItem}
             t={t}
           />
-        )}
-        {activeTab === "history" && (
-          <HistoryView 
-            history={history} 
-            onViewItem={(item) => {
-              setViewedHistoryItem({
-                status: item.status,
-                product: item.product,
-                scanTimes: item.status === "suspicious" ? 3 : 1
-              });
-              setActiveTab("scan");
-            }}
-            t={t}
-          />
-        )}
-        {activeTab === "settings" && <SettingsView settings={settings} setSettings={setSettings} t={t} />}
-      </div>
-
-      {/* Bottom Nav */}
-      <div className="bg-white/70 backdrop-blur-[20px] backdrop-saturate-[180%] border-t border-white/50 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] pb-safe sm:pb-6 pt-2 px-6 flex justify-between items-center relative z-40">
-        <NavButton
-          id="scan"
-          icon={ScanLine}
-          label={t.scan}
-          active={activeTab === "scan"}
-          onClick={() => setActiveTab("scan")}
-        />
-        <NavButton
-          id="history"
-          icon={History}
-          label={t.history}
-          active={activeTab === "history"}
-          onClick={() => setActiveTab("history")}
-        />
-        <NavButton
-          id="settings"
-          icon={Settings}
-          label={t.settings}
-          active={activeTab === "settings"}
-          onClick={() => setActiveTab("settings")}
-        />
       </div>
     </div>
   );
@@ -406,59 +364,6 @@ function ScanView({ nfcEnabled, setNfcEnabled, addScanToHistory, viewedItem, set
           <p className="text-[#16a34a] font-medium text-center mb-6 text-sm">
             {t.authenticMsg}
           </p>
-
-          <div className="w-full max-w-sm bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mb-6 flex flex-col items-center">
-            <div className="font-bold text-slate-800 text-lg text-center mb-1">
-              {scannedProduct.name}
-            </div>
-            <div className="text-slate-500 text-sm text-center mb-5">
-              {scannedProduct.id}
-            </div>
-            <div className="w-full space-y-3 pt-4 border-t border-slate-50">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.manufacturer}</span>
-                <span className="text-sm font-medium text-slate-800">
-                  CAVIDOĞLU
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.origin}</span>
-                <span className="text-sm font-medium text-slate-800">
-                  Geneva, Switzerland
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.mfgDate}</span>
-                <span className="text-sm font-medium text-slate-800">
-                  2026-05-14
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.warranty}</span>
-                <span className="text-sm font-medium text-slate-800">
-                  Valid until 2028
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.distributor}</span>
-                <span className="text-sm font-medium text-slate-800">
-                  Global Tech Supply
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.carbonFootprint}</span>
-                <span className="text-sm font-medium text-slate-800">
-                  12 kg CO2e
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-slate-500">{t.verification}</span>
-                <span className="text-sm font-medium text-green-600">
-                  {t.secure}
-                </span>
-              </div>
-            </div>
-          </div>
 
           <button
             onClick={handleDone}
