@@ -31,7 +31,7 @@ const TRANSLATIONS: any = {
     suspicious: "Suspicious Activity",
     authenticMsg: "Verified successfully",
     fakeMsg: "This product could not be verified.",
-    suspiciousMsg: "This tag has been scanned multiple times.",
+    suspiciousMsg: "This product has been opened before",
     reportIssue: "Report Issue",
     issueReported: "Issue Reported",
     done: "Done",
